@@ -1,0 +1,14 @@
+# Image de DÉVELOPPEMENT uniquement (hot reload). La production aura son propre
+# Dockerfile ou passera par Vercel (phase 8).
+FROM node:24-slim
+
+# pnpm vient de corepack ; la version exacte est celle de package.json (packageManager).
+RUN corepack enable
+
+WORKDIR /app
+
+EXPOSE 3000
+
+# Le code source est monté par compose.yaml (pas copié) : les modifications faites
+# sur le Mac sont visibles tout de suite. Les dépendances sont installées au
+# démarrage dans un volume Docker (voir command dans compose.yaml).

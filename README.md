@@ -8,9 +8,24 @@ Application web pour étudiants et enseignants : l'enseignant définit un projet
 - pnpm 12, via corepack. La version est épinglée dans `package.json` (`packageManager`).
   - `corepack enable` (peut demander les droits d'écriture sur `/usr/local/bin`), puis `pnpm -v`.
   - Sans cela : préfixer chaque commande par `corepack`, par exemple `corepack pnpm install`.
-- Docker : pas encore utilisé (arrive en phase 3 avec PostgreSQL).
+- Docker Desktop (pour l'environnement de développement conteneurisé, voir ci-dessous).
 
 ## Démarrer
+
+### Avec Docker (recommandé)
+
+```bash
+./scripts/dev.sh           # installe et lance, puis attend que http://localhost:3000 réponde
+./scripts/dev.sh --logs    # idem, et reste attaché aux logs
+./scripts/stop.sh          # arrête et supprime les conteneurs (garde les dépendances installées)
+./scripts/stop.sh --clean  # repart de zéro : supprime aussi volumes et image
+```
+
+Le code du dépôt est **monté** dans le conteneur : tout fichier modifié sur ta machine met la page à jour en environ 1 seconde, sans reconstruction. `node_modules` et `.next` vivent dans des volumes Docker (leurs binaires sont pour Linux, ceux de macOS ne marcheraient pas). Pour lancer une commande dans le conteneur : `docker compose exec app pnpm check`.
+
+`dev.sh` crée `.env.local` depuis `.env.example` s'il n'existe pas. PostgreSQL et le stockage S3 local seront ajoutés à `compose.yaml` aux phases 3 et 6.
+
+### Sans Docker
 
 ```bash
 pnpm install
