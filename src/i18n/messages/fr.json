@@ -7,5 +7,39 @@
     "title": "Pentimento",
     "tagline": "Les corrections sont visibles sous la couche finale.",
     "status": "Le squelette du projet est en place."
+  },
+  "DesignDemo": {
+    "title": "Démonstration du design",
+    "intro": "Page de développement : introuvable en production. Navigue au clavier (Tab) pour voir l'anneau de focus.",
+    "colors": "Couleurs",
+    "typography": "Typographie",
+    "sample": "Les corrections restent visibles",
+    "buttons": "Boutons",
+    "buttonAction": "Action",
+    "buttonDanger": "Supprimer",
+    "buttonDisabled": "Désactivé",
+    "banners": "Bandeaux d'état",
+    "banner": {
+      "erreur": {
+        "title": "Erreur",
+        "body": "Le dépôt n'a pas pu être enregistré."
+      },
+      "succes": {
+        "title": "Succès",
+        "body": "Ta version est déposée."
+      },
+      "attention": {
+        "title": "Attention",
+        "body": "La date limite est dépassée."
+      },
+      "info": {
+        "title": "Information",
+        "body": "Une nouvelle version est disponible."
+      }
+    },
+    "fields": "Champs de saisie",
+    "fieldLabel": "Titre du livrable",
+    "fieldHint": "Un titre court suffit.",
+    "fieldError": "Ce champ est obligatoire."
   }
 }

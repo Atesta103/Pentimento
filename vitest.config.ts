@@ -7,6 +7,9 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["tests/unit/**/*.test.ts", "tests/architecture/**/*.test.ts"],
+    include: [
+      "tests/unit/**/*.test.{ts,tsx}",
+      "tests/architecture/**/*.test.ts",
+    ],
   },
 });

@@ -71,6 +71,10 @@ tests/
 
 Présentation → Entrée → Services → Dépôts → Données. **Chaque couche n'importe que celle du dessous.** Le test [tests/architecture/layers.test.ts](tests/architecture/layers.test.ts) le vérifie à chaque `pnpm check` ; il s'appuie sur des exemples valide et fautif dans `tests/architecture/fixtures/`.
 
+## Design
+
+`design/tokens.json` est la **source unique** (couleurs, typographie, espacements, rayons, focus, mouvement). `pnpm tokens` en tire `src/styles/tokens.css` (généré, ne pas modifier à la main ; un test échoue s'il est périmé). Le thème Tailwind est **limité aux jetons** : `p-16` = 16 px, `rounded-8`, `text-titre-1`, `bg-erreur-fond`… et aucune couleur en dur n'est acceptée (test). Page de démonstration, en développement seulement : `/fr/dev/design` (404 en production).
+
 ## Langues
 
 Aucun texte d'interface en dur : tout passe par [src/i18n/messages](src/i18n/messages). Un test garantit que `fr.json` et `en.json` ont les mêmes clés.

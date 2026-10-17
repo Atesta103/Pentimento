@@ -7,5 +7,39 @@
     "title": "Pentimento",
     "tagline": "Corrections stay visible beneath the final layer.",
     "status": "The project skeleton is in place."
+  },
+  "DesignDemo": {
+    "title": "Design demo",
+    "intro": "Development page: not found in production. Use Tab to see the focus ring.",
+    "colors": "Colors",
+    "typography": "Typography",
+    "sample": "Corrections stay visible",
+    "buttons": "Buttons",
+    "buttonAction": "Action",
+    "buttonDanger": "Delete",
+    "buttonDisabled": "Disabled",
+    "banners": "Status banners",
+    "banner": {
+      "erreur": {
+        "title": "Error",
+        "body": "The submission could not be saved."
+      },
+      "succes": {
+        "title": "Success",
+        "body": "Your version is submitted."
+      },
+      "attention": {
+        "title": "Warning",
+        "body": "The deadline has passed."
+      },
+      "info": {
+        "title": "Information",
+        "body": "A new version is available."
+      }
+    },
+    "fields": "Text fields",
+    "fieldLabel": "Deliverable title",
+    "fieldHint": "A short title is enough.",
+    "fieldError": "This field is required."
   }
 }

@@ -1,3 +1,41 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
-/* Les jetons de design (couleurs, espacements) arrivent en phase 2. */
+@layer base {
+  html {
+    background-color: var(--color-fond);
+    color: var(--color-texte);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  /* Titres : Young Serif 400 uniquement, jamais de gras. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-heading);
+  }
+
+  /*
+   * Focus visible au clavier : anneau de 4 px en couleur d'action, décalé de 4 px.
+   * `outline` suit l'arrondi (border-radius) de l'élément.
+   */
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-action);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+/* « Réduire les animations » : aucune animation ni transition. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

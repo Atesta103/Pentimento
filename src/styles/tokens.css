@@ -1,0 +1,84 @@
+/* GÉNÉRÉ par scripts/generate-tokens.ts depuis design/tokens.json : ne pas modifier à la main. */
+/* Chaque famille est remise à zéro (`initial`) pour que Tailwind n'offre QUE les jetons de Pentimento. */
+@theme static {
+  --color-*: initial;
+  --color-fond: #F6F7F4;
+  --color-texte: #1F2A2E;
+  --color-action: #3E6B6A;
+  --color-action-hover: #2E5252;
+  --color-surface: #E4EBE6;
+  --color-disabled-text: #6B7678;
+  --color-blanc: #FFFFFF;
+  --color-erreur: #A63D2B;
+  --color-erreur-fond: #F6E1DA;
+  --color-erreur-bordure: color-mix(in srgb, var(--color-erreur) 40%, transparent);
+  --color-succes: #41692B;
+  --color-succes-fond: #E3EDD9;
+  --color-succes-bordure: color-mix(in srgb, var(--color-succes) 40%, transparent);
+  --color-attention: #8A5A0B;
+  --color-attention-fond: #F6E8C8;
+  --color-attention-bordure: color-mix(in srgb, var(--color-attention) 40%, transparent);
+  --color-info: #3D5F82;
+  --color-info-fond: #E0E8F0;
+  --color-info-bordure: color-mix(in srgb, var(--color-info) 40%, transparent);
+
+  --font-*: initial;
+  --font-heading: "Young Serif", Georgia, serif;
+  --font-body: "Instrument Sans", system-ui, sans-serif;
+  --font-weight-*: initial;
+  --font-weight-heading: 400;
+  --font-weight-regular: 400;
+  --font-weight-caption: 500;
+  --font-weight-label: 600;
+
+  --text-*: initial;
+  --text-display: 88px;
+  --text-display--line-height: 88px;
+  --text-titre-1: 56px;
+  --text-titre-1--line-height: 64px;
+  --text-titre-2: 36px;
+  --text-titre-2--line-height: 40px;
+  --text-titre-3: 28px;
+  --text-titre-3--line-height: 32px;
+  --text-titre-4: 24px;
+  --text-titre-4--line-height: 32px;
+  --text-corps-grand: 20px;
+  --text-corps-grand--line-height: 28px;
+  --text-corps: 16px;
+  --text-corps--line-height: 24px;
+  --text-legende: 16px;
+  --text-legende--line-height: 24px;
+  --container-*: initial;
+  --container-reading: 62ch;
+
+  --spacing-*: initial;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-96: 96px;
+
+  --radius-*: initial;
+  --radius-8: 8px;
+  --radius-12: 12px;
+
+  /* Aucune ombre dans la direction artistique. */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+
+  /* Focus : anneau qui suit l'arrondi de l'élément. */
+  --focus-ring-width: 4px;
+  --focus-ring-offset: 4px;
+
+  /* Mouvement. Les courbes `todo-*` sont provisoires (voir design/tokens.json, _todo). */
+  --ease-*: initial;
+  --duration-base: 320ms;
+  --duration-slow: 480ms;
+  --ease-todo-standard: ease;
+}
