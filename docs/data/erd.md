@@ -4,8 +4,8 @@ Modèle de données du MVP (PostgreSQL). Conventions : tables au pluriel, `snake
 
 ```mermaid
 erDiagram
-    institutions ||--o{ users : "has"
-    institutions ||--o{ projects : "hosts"
+    institutions |o--o{ users : "has"
+    institutions |o--o{ projects : "hosts"
     institutions |o--o{ templates : "owns"
     users ||--o{ projects : "creates"
     projects ||--o{ groups : "has"
@@ -36,7 +36,7 @@ erDiagram
 
     users {
         uuid id PK
-        uuid institution_id FK
+        uuid institution_id FK "nullable"
         text email UK
         text first_name
         text last_name
@@ -48,7 +48,7 @@ erDiagram
 
     projects {
         uuid id PK
-        uuid institution_id FK
+        uuid institution_id FK "nullable"
         uuid created_by_id FK
         text title
         text brief
@@ -104,6 +104,7 @@ erDiagram
 
     assignments {
         uuid id PK
+        uuid project_id FK "redondant, pour les cles composites"
         uuid deliverable_id FK
         uuid group_id FK
         assignment_status status
@@ -195,13 +196,13 @@ Exemple : `projects ||--o{ groups` se lit « un projet a zéro ou plusieurs grou
 - `assignments` : (`deliverable_id`, `group_id`)
 - `submissions` : (`assignment_id`, `version_number`)
 
-**Cohérence entre tables** : le `group_id` d'un `project_members` doit appartenir au même projet que lui (clé composite ou contrôle dans la couche service).
+**Cohérence entre tables** (décidé et construit en phase 3) : le `group_id` d'un `project_members` appartient au même projet que lui, par clé composite `(project_id, group_id)` → `groups(project_id, id)`. Même chose pour `assignments`, grâce à une colonne `project_id` redondante : le groupe **et** le livrable doivent être du projet de l'affectation. La base refuse le reste, même via un script.
 
 **Immuabilité** : `submissions` et `status_changes` ne reçoivent jamais d'`UPDATE` ni de `DELETE`.
 
 **Suppression** : pas de `ON DELETE CASCADE` sur ce qui contient du travail d'étudiant ; les projets s'archivent.
 
-**Index prévus** : `project_members(user_id)`, `assignments(group_id, status)`, `assignments(status, last_activity_at)`, `submissions(assignment_id)`, `comments(submission_id)`.
+**Index construits** : voir `schema-notes.md` ; la liste définitive est celle des migrations (`src/server/db/migrations/`).
 
 ## Prévu pour la V2, non construit
 

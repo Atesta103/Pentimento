@@ -5,3 +5,5 @@ allowBuilds:
   "@parcel/watcher": false
   "@swc/core": false
   unrs-resolver: false
+  # esbuild (via drizzle-kit et tsx) : binaire fourni par paquet précompilé selon la plateforme.
+  esbuild: false

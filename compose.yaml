@@ -12,7 +12,12 @@ services:
     env_file:
       - path: .env.local
         required: false
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
+      # Dans le réseau Docker, la base s'appelle « db » (et non localhost).
+      DATABASE_URL: postgres://pentimento:${POSTGRES_PASSWORD}@db:5432/pentimento
       # Filet de sécurité : certains partages de fichiers Docker ne transmettent
       # pas les événements de modification ; le polling les remplace.
       WATCHPACK_POLLING: "true"
@@ -28,7 +33,27 @@ services:
     init: true
     restart: unless-stopped
 
+  db:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_USER: pentimento
+      # Généré aléatoirement par scripts/dev.sh dans .env.local (ignoré par git).
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?lance ./scripts/dev.sh, qui crée .env.local}
+      POSTGRES_DB: pentimento
+    ports:
+      # Limité à ta machine (127.0.0.1) : la base n'est pas visible du réseau.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pentimento -d pentimento"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
 volumes:
+  pgdata:
   node_modules:
   next_cache:
   pnpm_store:

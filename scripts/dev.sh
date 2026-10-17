@@ -26,18 +26,37 @@ if [ ! -f .env.local ]; then
   echo "→ .env.local créé depuis .env.example (valeurs vides, à remplir quand une phase en aura besoin)."
 fi
 
+# Renseigne une variable de .env.local seulement si elle est vide ou absente.
+set_if_empty() {
+  local key="$1" value="$2"
+  if grep -qE "^${key}=.+" .env.local; then return; fi
+  if grep -q "^${key}=" .env.local; then
+    sed -i.bak "s|^${key}=.*|${key}=${value}|" .env.local && rm -f .env.local.bak
+  else
+    echo "${key}=${value}" >> .env.local
+  fi
+}
+
+# Base locale : mot de passe aléatoire, jamais écrit dans le dépôt (.env.local est ignoré par git).
+set_if_empty POSTGRES_PASSWORD "$(openssl rand -hex 16)"
+POSTGRES_PASSWORD="$(grep '^POSTGRES_PASSWORD=' .env.local | cut -d= -f2-)"
+set_if_empty DATABASE_URL "postgres://pentimento:${POSTGRES_PASSWORD}@localhost:5432/pentimento"
+
+# Toutes les commandes compose lisent .env.local (mot de passe de la base).
+COMPOSE=(docker compose --env-file .env.local)
+
 echo "→ Construction de l'image (rapide si rien n'a changé)…"
-docker compose build
+"${COMPOSE[@]}" build
 
 echo "→ Démarrage (le premier lancement installe les dépendances, patiente)…"
-docker compose up -d
+"${COMPOSE[@]}" up -d
 
 echo "→ Attente de l'application sur $URL …"
 elapsed=0
 until curl -fs -o /dev/null "$URL/fr"; do
-  if [ -z "$(docker compose ps --status running -q app)" ]; then
+  if [ -z "$("${COMPOSE[@]}" ps --status running -q app)" ]; then
     echo "Le conteneur s'est arrêté. Dernières lignes du journal :" >&2
-    docker compose logs --tail 40 app >&2
+    "${COMPOSE[@]}" logs --tail 40 app >&2
     exit 1
   fi
   if [ "$elapsed" -ge "$TIMEOUT_SECONDS" ]; then
@@ -54,5 +73,5 @@ echo "   Logs   : docker compose logs -f app"
 echo "   Arrêt  : ./scripts/stop.sh"
 
 if [ "${1:-}" = "--logs" ]; then
-  exec docker compose logs -f app
+  exec "${COMPOSE[@]}" logs -f app
 fi

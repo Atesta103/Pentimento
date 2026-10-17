@@ -43,7 +43,7 @@ Aussi : `users.email` unique (insensible à la casse : stocker en minuscules), `
 
 **Problème.** `project_members.group_id` pointe vers un groupe, mais rien n'empêche que ce groupe appartienne à un *autre* projet que `project_members.project_id`.
 
-**Solution retenue.** Ajouter une unicité `unique(groups.project_id, groups.id)` puis une clé étrangère composite `(project_id, group_id)` → `groups(project_id, id)` dans `project_members`. La base garantit alors la règle elle-même. **Pourquoi pas autrement :** un contrôle dans le service ne protège pas contre un script, une migration ou un oubli ; la base est la dernière ligne de défense. Même schéma pour `assignments` (le groupe et le livrable doivent être du même projet) : voir en phase 3 si une colonne `project_id` redondante sur `assignments` est justifiée, et le noter dans le journal.
+**Solution retenue.** Ajouter une unicité `unique(groups.project_id, groups.id)` puis une clé étrangère composite `(project_id, group_id)` → `groups(project_id, id)` dans `project_members`. La base garantit alors la règle elle-même. **Pourquoi pas autrement :** un contrôle dans le service ne protège pas contre un script, une migration ou un oubli ; la base est la dernière ligne de défense. **Décidé en phase 3** : `assignments` reçoit une colonne `project_id` redondante, avec deux clés composites `(project_id, deliverable_id)` → `deliverables(project_id, id)` et `(project_id, group_id)` → `groups(project_id, id)`. Coût : une colonne en plus. Gain : la base refuse une affectation qui mélangerait deux projets.
 
 ## Contraintes `CHECK`
 
@@ -67,17 +67,27 @@ Aussi : `users.email` unique (insensible à la casse : stocker en minuscules), `
 | `assignments(status)` ou `(group_id, status)` | dashboards |
 | `assignments(last_activity_at)` | tri « le plus ancien en attente » |
 | `deliverables(project_id, sort_order)` | chronologie |
-| `submissions(assignment_id, version_number desc)` | dernière version |
+| ~~`submissions(assignment_id, version_number desc)`~~ | **non construit** : l'unicité `(assignment_id, version_number)` crée déjà un index que PostgreSQL parcourt à l'envers pour la dernière version ; un second serait une écriture de plus à chaque dépôt, pour rien |
 | `comments(submission_id)` | page d'un livrable |
 | `status_changes(assignment_id, changed_at)` | historique |
 | `notifications(user_id, sent_at)` | file d'envoi et boîte de réception |
 | `project_members(user_id)` | « mes projets » (chargement à travers les projets de l'utilisateur) |
+| `project_members(group_id)` | lister les membres d'un groupe *(ajouté en phase 3)* |
+| `assignments(project_id, status)` | compteurs du dashboard enseignant par projet et statut *(ajouté en phase 3)* |
 
 Les clés étrangères ne sont pas indexées automatiquement par PostgreSQL : chaque clé utilisée en jointure fréquente reçoit un index.
 
 ## Liaison avec l'authentification
 
 La bibliothèque d'authentification (phase 4) apporte ses propres tables (sessions, comptes, vérifications). Deux options à comparer à ce moment-là : (a) la table `users` du projet *est* la table utilisateur de la bibliothèque, étendue de nos champs ; (b) table séparée liée par un identifiant. Décision à noter au journal. L'`email_verified_at` du schéma doit rester cohérent avec ce que la bibliothèque appelle « email vérifié ».
+
+## Ajouts de la phase 3 (à valider)
+
+- `users.institution_id` et `projects.institution_id` sont **facultatifs** au MVP (pas d'administrateur ni de création d'établissement). À rendre obligatoires en V2.4.
+- `CHECK` en plus de la liste ci-dessus : `users.locale in ('fr','en')`, `users.email = lower(email)` (impose le stockage en minuscules), `submissions.checksum_sha256` = 64 caractères hexadécimaux.
+- `ON DELETE RESTRICT` sur **toutes** les clés étrangères, explicitement.
+- Triggers : `forbid_row_modification()` lève l'erreur SQLSTATE `23001` (`restrict_violation`) sur `UPDATE` et `DELETE` de `submissions` et `status_changes`. `TRUNCATE` n'est pas couvert (il exige d'être propriétaire de la table).
+- `updated_at` est mis à jour par Drizzle (`$onUpdate`), pas par la base : un `UPDATE` en SQL pur ne le change pas.
 
 ## Données de démonstration (seed)
 

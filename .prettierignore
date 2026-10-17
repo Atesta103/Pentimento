@@ -7,3 +7,4 @@ pentimento-kickoff.zip
 BOOTSTRAP.md
 CLAUDE.md
 src/styles/tokens.css
+src/server/db/migrations

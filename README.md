@@ -23,7 +23,20 @@ Application web pour étudiants et enseignants : l'enseignant définit un projet
 
 Le code du dépôt est **monté** dans le conteneur : tout fichier modifié sur ta machine met la page à jour en environ 1 seconde, sans reconstruction. `node_modules` et `.next` vivent dans des volumes Docker (leurs binaires sont pour Linux, ceux de macOS ne marcheraient pas). Pour lancer une commande dans le conteneur : `docker compose exec app pnpm check`.
 
-`dev.sh` crée `.env.local` depuis `.env.example` s'il n'existe pas. PostgreSQL et le stockage S3 local seront ajoutés à `compose.yaml` aux phases 3 et 6.
+`dev.sh` crée `.env.local` depuis `.env.example` s'il n'existe pas, et y génère un mot de passe PostgreSQL aléatoire (jamais dans le dépôt). Le stockage S3 local sera ajouté à `compose.yaml` en phase 6.
+
+### Base de données
+
+PostgreSQL 17 tourne dans Docker (`127.0.0.1:5432`, visible de ta machine seulement). Ses données survivent à `./scripts/stop.sh` ; `--clean` les efface.
+
+```bash
+pnpm db:migrate        # applique les migrations à la base de développement
+pnpm db:seed           # efface puis charge le jeu de démonstration (refuse une base non locale)
+pnpm db:generate       # génère une migration après modification du schéma
+pnpm test:integration  # tests contre une base de test recréée de zéro (pentimento_test)
+```
+
+Schéma : `src/server/db/schema/` (une table par fichier). Migrations : `src/server/db/migrations/` (relues, jamais modifiées après application).
 
 ### Sans Docker
 
