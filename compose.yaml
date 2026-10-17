@@ -1,0 +1,34 @@
+# Environnement de développement : `./scripts/dev.sh` pour lancer, `./scripts/stop.sh` pour arrêter.
+name: pentimento
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: sh -c "pnpm install --frozen-lockfile && pnpm dev --hostname 0.0.0.0"
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env.local
+        required: false
+    environment:
+      # Filet de sécurité : certains partages de fichiers Docker ne transmettent
+      # pas les événements de modification ; le polling les remplace.
+      WATCHPACK_POLLING: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      # Code source du Mac, modifiable en direct.
+      - .:/app
+      # Dépendances et cache de build : dans Docker, pas sur le Mac. Ces dossiers
+      # contiennent des binaires Linux, incompatibles avec ceux de macOS.
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+      - pnpm_store:/root/.local/share/pnpm/store
+    init: true
+    restart: unless-stopped
+
+volumes:
+  node_modules:
+  next_cache:
+  pnpm_store:

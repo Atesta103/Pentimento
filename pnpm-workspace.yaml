@@ -1,0 +1,7 @@
+# Scripts d'installation des dépendances : refusés par défaut (supply chain).
+# @swc/core et @parcel/watcher viennent de next-intl (extraction de textes,
+# optionnelle) ; leurs binaires arrivent par paquets précompilés, pas par script.
+allowBuilds:
+  "@parcel/watcher": false
+  "@swc/core": false
+  unrs-resolver: false
