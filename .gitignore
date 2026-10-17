@@ -1,0 +1,25 @@
+# dépendances et builds
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# tests
+coverage/
+playwright-report/
+test-results/
+
+# secrets : seuls les NOMS vont dans .env.example
+.env
+.env.*
+!.env.example
+
+# système et éditeur
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# archive du kit de démarrage (déjà extraite)
+pentimento-kickoff.zip
